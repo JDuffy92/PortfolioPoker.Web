@@ -10,7 +10,7 @@
 <div class="hand-container">
     @if (RunStateService.CurrentRound?.Hand != null)
     {
-        @foreach (var card in RunStateService.CurrentRound.Hand.Cards)
+        @foreach (var card in RunStateService.GetSortedHandCards())
         {
             <CardComponent SelectedCard="card" @ref="cardRefs[card]" />
         }

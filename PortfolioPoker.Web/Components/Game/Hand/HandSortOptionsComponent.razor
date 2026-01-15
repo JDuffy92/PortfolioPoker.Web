@@ -1,5 +1,6 @@
 @using PortfolioPoker.Application.Interfaces
 @using PortfolioPoker.Application.Services
+@using PortfolioPoker.Domain.Enums
 @using PortfolioPoker.Web.Components.Game.Cards
 
 @inject ILogger<PlayCardsButtonComponent> Logger
@@ -32,7 +33,7 @@
         Logger.LogInformation("Sorting hand by rank");
 
         // Sort Hand
-        RunStateService.SortHandByRank();
+        RunStateService.SetSortMode(HandSortMode.Rank);
 
         Logger.LogInformation("Hand sorted by rank");
     }
@@ -42,7 +43,7 @@
         Logger.LogInformation("Sorting hand by suit");
 
         // Sort Hand
-        RunStateService.SortHandBySuit();
+        RunStateService.SetSortMode(HandSortMode.Suit);
 
         Logger.LogInformation("Hand sorted by suit");
     }
