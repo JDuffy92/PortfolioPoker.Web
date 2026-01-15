@@ -51,5 +51,39 @@ namespace PortfolioPoker.Tests.EditMode.Domain.Models
             Assert.Contains(card1, discardPile.Cards);
             Assert.Contains(card2, discardPile.Cards);
         }
+
+        [Fact]
+        public void SortByRank_ShouldSortCardsInHandByRank()
+        {
+            var card1 = new Card(Suit.Hearts, Rank.Five);
+            var card2 = new Card(Suit.Spades, Rank.Two);
+            var card3 = new Card(Suit.Diamonds, Rank.Three);
+            _hand.AddCard(card1);
+            _hand.AddCard(card2);
+            _hand.AddCard(card3);
+
+            var sortedCards = _hand.SortByRank();
+
+            Assert.Equal(Rank.Two, sortedCards[0].Rank);
+            Assert.Equal(Rank.Three, sortedCards[1].Rank);
+            Assert.Equal(Rank.Five, sortedCards[2].Rank);
+        }
+
+        [Fact]
+        public void SortBySuit_ShouldSortCardsInHandBySuit()
+        {
+            var card1 = new Card(Suit.Spades, Rank.Five);
+            var card2 = new Card(Suit.Hearts, Rank.Two);
+            var card3 = new Card(Suit.Diamonds, Rank.Three);
+            _hand.AddCard(card1);
+            _hand.AddCard(card2);
+            _hand.AddCard(card3);
+
+            var sortedCards = _hand.SortBySuit();
+
+            Assert.Equal(Suit.Diamonds, sortedCards[0].Suit);
+            Assert.Equal(Suit.Hearts, sortedCards[1].Suit);
+            Assert.Equal(Suit.Spades, sortedCards[2].Suit);
+        }
     }
 }

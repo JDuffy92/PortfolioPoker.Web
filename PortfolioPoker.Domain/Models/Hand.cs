@@ -28,5 +28,21 @@ namespace PortfolioPoker.Domain.Models
                 discardPile.AddCard(card);
             }
         }
+
+        public IReadOnlyList<Card> SortByRank()
+        {
+            return Cards
+                .OrderBy(c => c.Rank)
+                .ThenBy(c => c.Suit)
+                .ToList();
+        }
+
+        public IReadOnlyList<Card> SortBySuit()
+        {
+            return Cards
+                .OrderBy(c => c.Suit)
+                .ThenBy(c => c.Rank)
+                .ToList();
+        }
     }
 }

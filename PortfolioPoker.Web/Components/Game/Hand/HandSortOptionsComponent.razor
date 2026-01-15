@@ -1,0 +1,49 @@
+@using PortfolioPoker.Application.Interfaces
+@using PortfolioPoker.Application.Services
+@using PortfolioPoker.Web.Components.Game.Cards
+
+@inject ILogger<PlayCardsButtonComponent> Logger
+@inject IRunStateService RunStateService
+@inject IGameRoundService GameRoundService
+@inject IAnimationCoordinator AnimationCoordinator
+
+
+<button @onclick="OnSortByRankClicked">
+    Sort Hand by Rank
+</button>
+
+<button @onclick="OnSortBySuitClicked">
+    Sort Hand by Suit
+</button>
+
+@code {
+    protected override void OnInitialized()
+    {
+        RunStateService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        RunStateService.OnChange -= StateHasChanged;
+    }
+
+    public void OnSortByRankClicked()
+    {
+        Logger.LogInformation("Sorting hand by rank");
+
+        // Sort Hand
+        RunStateService.SortHandByRank();
+
+        Logger.LogInformation("Hand sorted by rank");
+    }
+
+    public void OnSortBySuitClicked()
+    {
+        Logger.LogInformation("Sorting hand by suit");
+
+        // Sort Hand
+        RunStateService.SortHandBySuit();
+
+        Logger.LogInformation("Hand sorted by suit");
+    }
+}

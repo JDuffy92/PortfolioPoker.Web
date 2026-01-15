@@ -29,5 +29,8 @@ namespace PortfolioPoker.Application.Interfaces
         void DeselectCard(Card card);
 
         void DeselectAllCards();
+
+        void SortHandByRank();
+        void SortHandBySuit();
     }
 }
