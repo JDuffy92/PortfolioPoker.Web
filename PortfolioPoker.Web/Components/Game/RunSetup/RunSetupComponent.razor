@@ -1,0 +1,72 @@
+@using PortfolioPoker.Application.Interfaces
+@using PortfolioPoker.Domain.Enums
+@using PortfolioPoker.Domain.Models
+@using System.Threading.Tasks
+@using PortfolioPoker.Web.Components.Game.RunSetup
+
+@inject IRunStateService RunStateService;
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+@inject ILogger<RunSetupComponent> Logger
+
+<h3>Create a Run</h3>
+
+<div class="setup-form">
+    <DeckTypeSelectorComponent @bind-SelectedDeckType="SelectedDeckType" />
+
+    <SeedInputComponent @bind-SeedOverride="SeedOverride" />
+   
+    <!-- Button -->
+    <button @onclick="CreateRun">Create Run</button>
+</div>
+
+@if (RunCreated)
+{
+    <p style="color:green;">Run successfully created!  @RunStateService.CurrentRun?.Config.DeckType.ToString()  @RunStateService.CurrentRun?.Config.Seed</p>
+}
+
+@code {
+    // ----------------------------
+    // Inject Application Services
+    // ----------------------------
+    [Inject] public IRunSetupService RunSetupService { get; set; } = null!;
+    [Inject] public IRunProgressService RunProgressService { get; set; } = null!;
+    [Inject] public IGameRoundService GameRoundService { get; set; } = null!;
+
+    // ----------------------------
+    // UI state
+    // ----------------------------
+    private DeckType SelectedDeckType { get; set; } = DeckType.RedDeck;
+    private int? SeedOverride { get; set; } = null;
+    private bool RunCreated { get; set; } = false;
+
+    private Run? CurrentRun { get; set; } = null;
+
+    // ----------------------------
+    // Methods
+    private async Task CreateRun()
+    {
+        // Call your Application service
+        CurrentRun = RunSetupService.CreateRun(
+        deckType: SelectedDeckType,
+        seedOverride: SeedOverride
+        );
+
+        RunCreated = true;
+
+        // Log to terminal
+        Logger.LogInformation("Run created with deck '{DeckType}' and seed '{Seed}'",
+        SelectedDeckType, SeedOverride);
+
+        //Clear any existing state
+        RunStateService.Clear();
+
+        // Set the current run in RunStateService
+        RunStateService.SetCurrentRun(CurrentRun);
+
+        // Redirect to the game page
+        Navigation.NavigateTo("/game");
+
+        await Task.CompletedTask;
+    }
+}

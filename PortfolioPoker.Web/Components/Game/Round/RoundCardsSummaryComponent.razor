@@ -1,0 +1,24 @@
+@using PortfolioPoker.Application.Interfaces
+@using PortfolioPoker.Domain.Models
+
+@inject IRunStateService RunStateService;
+
+<h5>Round State Details</h5>
+<p>Cards In Deck: @(RunStateService?.CurrentRound?.Deck?.Cards?.Count() ?? 0)</p>
+<p>Cards In Hand: @(RunStateService?.CurrentRound?.Hand?.Cards?.Count() ?? 0)</p>
+<p>Cards in Discard Pile: @(RunStateService?.CurrentRound?.DiscardPile?.Cards?.Count() ?? 0)</p>
+
+<h5>Discards</h5>
+<p>Discards Available: @((RunStateService?.CurrentRound?.DiscardsAvailable ?? 0) - (RunStateService?.CurrentRound?.DiscardsMade ?? 0))</p>
+
+@code {
+    protected override void OnInitialized()
+    {
+        RunStateService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        RunStateService.OnChange -= StateHasChanged;
+    }
+}

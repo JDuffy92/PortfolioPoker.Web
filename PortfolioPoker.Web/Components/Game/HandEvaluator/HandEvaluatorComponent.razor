@@ -1,0 +1,35 @@
+@using PortfolioPoker.Application.Interfaces
+@using PortfolioPoker.Domain.Enums
+@using PortfolioPoker.Domain.Interfaces
+@using PortfolioPoker.Domain.ValueObjects
+
+@inject IRunStateService RunStateService;
+@inject IGameRoundService GameRoundService;
+
+
+<div>
+    <h3>Hand Evaluation</h3>
+    @if (RunStateService.CurrentRound != null)
+    {
+        <p>Number of Cards Selected: @RunStateService.SelectedCards.Count()</p>
+        @* Additional hand evaluation details can be added here *@
+        <p>Hand Type: @GameRoundService.PreviewHandEvaluation(RunStateService.SelectedCards).HandType</p>
+    }
+    else
+    {
+        <p>No current round available for evaluation.</p>
+    }
+</div>
+
+
+@code {
+    protected override void OnInitialized()
+    {
+        RunStateService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        RunStateService.OnChange -= StateHasChanged;
+    }
+}

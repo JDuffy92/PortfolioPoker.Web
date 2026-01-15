@@ -1,0 +1,101 @@
+@using PortfolioPoker.Application.Interfaces
+@using PortfolioPoker.Domain.Enums
+@using PortfolioPoker.Domain.ValueObjects
+
+@inject IRunStateService RunStateService;
+@inject IAnimationCoordinator AnimationCoordinator
+
+<div class="card-container @(IsSelected ? "card-selected" : "")"
+     style="color:@SuitColor; 
+            opacity:@Opacity;"
+            
+     @onclick="OnCardClicked">
+    @if (SelectedCard != null)
+    {
+        <div class="card-header">
+            <div class="card-rank">@RankSymbol</div>
+            <div class="card-suit">@SuitSymbol</div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public PortfolioPoker.Domain.Models.Card SelectedCard { get; set; } //Fully qualified to avoid ambiguity
+
+    private bool IsSelected => RunStateService.SelectedCards.Contains(SelectedCard);
+
+    private double Opacity { get; set; } = 1.0;
+
+    private string SuitColor => SelectedCard.Suit switch
+    {
+        PortfolioPoker.Domain.Enums.Suit.Hearts or PortfolioPoker.Domain.Enums.Suit.Diamonds => "red",
+        _ => "black"
+    };
+
+    private string SuitSymbol => SelectedCard.Suit switch
+    {
+        PortfolioPoker.Domain.Enums.Suit.Hearts => "♥",
+        PortfolioPoker.Domain.Enums.Suit.Diamonds => "♦",
+        PortfolioPoker.Domain.Enums.Suit.Clubs => "♣",
+        PortfolioPoker.Domain.Enums.Suit.Spades => "♠",
+        _ => "?"
+    };
+
+    private string RankSymbol => SelectedCard.Rank switch
+    {
+        PortfolioPoker.Domain.Enums.Rank.Ace => "A",
+        PortfolioPoker.Domain.Enums.Rank.King => "K",
+        PortfolioPoker.Domain.Enums.Rank.Queen => "Q",
+        PortfolioPoker.Domain.Enums.Rank.Jack => "J",
+        PortfolioPoker.Domain.Enums.Rank.Ten => "10",
+        PortfolioPoker.Domain.Enums.Rank.Nine => "9",
+        PortfolioPoker.Domain.Enums.Rank.Eight => "8",
+        PortfolioPoker.Domain.Enums.Rank.Seven => "7",
+        PortfolioPoker.Domain.Enums.Rank.Six => "6",
+        PortfolioPoker.Domain.Enums.Rank.Five => "5",
+        PortfolioPoker.Domain.Enums.Rank.Four => "4",
+        PortfolioPoker.Domain.Enums.Rank.Three => "3",
+        PortfolioPoker.Domain.Enums.Rank.Two => "2",
+        _ => "?"
+    };
+
+    private void OnCardClicked()
+    {
+        if (IsSelected)
+            RunStateService.DeselectCard(SelectedCard);
+        else
+            RunStateService.SelectCard(SelectedCard);
+    }
+
+    /// <summary>
+    /// Called from HandComponent when a discard/draw animation happens
+    /// </summary>
+    public async Task AnimateDiscardAsync()
+    {
+        // Fade out
+        for (int i = 0; i < 5; i++)
+        {
+            Opacity -= 0.2;
+            StateHasChanged();
+            await Task.Delay(50);
+        }
+
+        Opacity = 1.0;
+        StateHasChanged();
+    }
+
+    public async Task AnimateDrawAsync()
+    {
+        // Simple “fade in” effect
+        Opacity = 0;
+        StateHasChanged();
+
+        for (int i = 0; i < 5; i++)
+        {
+            Opacity += 0.2;
+            StateHasChanged();
+            await Task.Delay(50);
+        }
+    }
+}

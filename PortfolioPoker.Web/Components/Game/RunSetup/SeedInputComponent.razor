@@ -1,0 +1,12 @@
+<!-- Seed Input -->
+<label for="seedInput">Seed (optional):</label>
+<input id="seedInput" type="text" @bind="SeedOverride" placeholder="Enter seed" />
+
+
+@code {
+    [Parameter]
+    public int? SeedOverride { get; set; } = null;
+
+    [Parameter]
+    public EventCallback<int?> SeedOverrideChanged { get; set; }
+}

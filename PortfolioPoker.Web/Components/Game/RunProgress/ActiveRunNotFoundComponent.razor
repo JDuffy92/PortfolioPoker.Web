@@ -1,0 +1,11 @@
+@inject NavigationManager Navigation
+
+<p>No active run found.</p>
+<button @onclick="GoHome">Back to setup</button>
+
+@code {
+    private void GoHome()
+    {
+        Navigation.NavigateTo("/");
+    }
+}

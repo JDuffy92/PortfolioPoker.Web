@@ -1,0 +1,46 @@
+@using PortfolioPoker.Application.Interfaces
+@using PortfolioPoker.Domain.Enums
+@using PortfolioPoker.Domain.Models
+@using System.Threading.Tasks
+@using PortfolioPoker.Web.Components.Game.Cards
+@using PortfolioPoker.Web.Components.Game.Hand
+@using PortfolioPoker.Web.Components.Game.Round
+@using PortfolioPoker.Web.Components.Game.RunSetup
+
+
+@inject IRunStateService RunStateService;
+@inject IRunProgressService RunProgressService;
+@inject NavigationManager Navigation
+
+
+@if (RunStateService.CurrentRound == null)
+{
+    @if (RunStateService.CurrentRun == null)
+    {
+        <ActiveRunNotFoundComponent />
+    }
+    else
+    {
+        <ActiveRunOverviewComponent />
+    }
+}
+else
+{
+    @if (RunStateService.CurrentRun != null)
+    {
+        <RoundComponent />
+    }
+}
+
+
+@code {
+    protected override void OnInitialized()
+    {
+        RunStateService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        RunStateService.OnChange -= StateHasChanged;
+    }
+}

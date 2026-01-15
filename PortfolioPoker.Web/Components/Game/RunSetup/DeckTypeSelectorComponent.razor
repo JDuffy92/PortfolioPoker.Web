@@ -1,0 +1,18 @@
+@using PortfolioPoker.Domain.Enums
+
+<!-- Deck Type Selection -->
+<label for="deckSelect">Select Deck Type:</label>
+<select id="deckSelect" @bind="SelectedDeckType">
+    @foreach (var deck in Enum.GetValues<DeckType>())
+    {
+        <option value="@deck">@deck</option>
+    }
+</select>
+
+@code {
+    [Parameter]
+    public DeckType SelectedDeckType { get; set; } = DeckType.RedDeck;
+
+    [Parameter]
+    public EventCallback<DeckType> SelectedDeckTypeChanged { get; set; }
+}

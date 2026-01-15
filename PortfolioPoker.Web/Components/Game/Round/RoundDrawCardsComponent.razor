@@ -1,0 +1,37 @@
+@using PortfolioPoker.Application.Interfaces
+@inject IRunStateService RunStateService;
+@inject IGameRoundService GameRoundService;
+
+@if (RunStateService.CurrentRound is not null && RunStateService.CurrentRound.Phase == RoundPhase.StartPhase)
+{
+    <p>The round is in the start phase. Click the button below to draw cards.</p>
+    <button @onclick="DrawCards">Draw Cards</button>
+}
+
+
+@code {
+    protected override void OnInitialized()
+    {
+        RunStateService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        RunStateService.OnChange -= StateHasChanged;
+    }
+
+
+    private void DrawCards()
+    {
+        if (RunStateService.CurrentRound is null)
+            return;
+
+        GameRoundService.DrawCards(
+            round: RunStateService.CurrentRound,
+            5
+        );
+
+        //Ensure UI updates after function call
+        RunStateService.NotifyStateChanged();
+    }
+}

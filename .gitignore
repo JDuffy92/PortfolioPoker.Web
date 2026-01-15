@@ -1,0 +1,77 @@
+############################
+# Build results
+############################
+bin/
+obj/
+out/
+
+############################
+# .NET / Visual Studio
+############################
+.vs/
+*.user
+*.userosscache
+*.suo
+*.cache
+*.log
+
+############################
+# Rider / VS Code
+############################
+.idea/
+.vscode/
+*.sln.iml
+
+############################
+# OS files
+############################
+.DS_Store
+Thumbs.db
+
+############################
+# Blazor / Web
+############################
+wwwroot/lib/
+wwwroot/_framework/
+wwwroot/service-worker-assets.js
+
+############################
+# Test results
+############################
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+############################
+# NuGet
+############################
+.nuget/
+packages/
+
+############################
+# Environment & secrets
+############################
+appsettings.Development.json
+appsettings.Local.json
+appsettings.*.local.json
+secrets.json
+
+############################
+# Publish output
+############################
+publish/
+
+############################
+# Temporary files
+############################
+*.tmp
+*.temp
+*.swp
+*.bak
+
+
+############################
+# Meta files
+############################
+*.meta

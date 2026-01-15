@@ -1,0 +1,91 @@
+@using PortfolioPoker.Application.Interfaces
+@using PortfolioPoker.Application.Services
+@using PortfolioPoker.Domain.Events
+@using PortfolioPoker.Domain.Interfaces
+@using PortfolioPoker.Domain.Models
+@using PortfolioPoker.Web.Components.Game.Cards
+@inject IRunStateService RunStateService
+@inject IAnimationCoordinator AnimationCoordinator
+
+<div class="hand-container">
+    @if (RunStateService.CurrentRound?.Hand != null)
+    {
+        @foreach (var card in RunStateService.CurrentRound.Hand.Cards)
+        {
+            <CardComponent SelectedCard="card" @ref="cardRefs[card]" />
+        }
+    }
+
+    <div class="break"></div> <!-- break -->
+
+    <div>
+    <PlayCardsButtonComponent/>
+
+    <DiscardButtonComponent/>
+    </div>
+</div>
+
+@code {
+    // Keep references to card components
+    private Dictionary<Card, CardComponent> cardRefs = new();
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender && RunStateService.CurrentRound?.Hand != null)
+        {
+            // Ensure dictionary has keys for all cards
+            foreach (var card in RunStateService.CurrentRound.Hand.Cards)
+            {
+                if (!cardRefs.ContainsKey(card))
+                    cardRefs[card] = null!;
+            }
+        }
+    }
+
+    private CardComponent GetCardRef(Card card)
+    {
+        if (!cardRefs.ContainsKey(card))
+            cardRefs[card] = null!; // will be filled by @ref after render
+        return cardRefs[card];
+    }
+
+    protected override void OnInitialized()
+    {
+        RunStateService.OnChange += StateHasChanged;
+        AnimationCoordinator.OnAnimate += OnAnimate;
+    }
+
+    public void Dispose()
+    {
+        RunStateService.OnChange -= StateHasChanged;
+        AnimationCoordinator.OnAnimate -= OnAnimate;
+    }
+
+    private async void OnAnimate(IReadOnlyList<IGameEvent> events)
+    {
+        foreach (var e in events)
+        {
+            if (e is CardsDiscardedEvent discard)
+            {
+                foreach (var card in discard.Cards)
+                {
+                    if (cardRefs.TryGetValue(card, out var comp) && comp != null)
+                    {
+                        await comp.AnimateDiscardAsync();
+                    }
+                }
+            }
+
+            if (e is CardsDrawnEvent draw)
+            {
+                foreach (var card in draw.Cards)
+                {
+                    if (cardRefs.TryGetValue(card, out var comp) && comp != null)
+                    {
+                        await comp.AnimateDrawAsync();
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,43 @@
+@using PortfolioPoker.Application.Interfaces
+@using PortfolioPoker.Domain.Models
+@using PortfolioPoker.Web.Components.Game.Round
+@inject IRunProgressService RunProgressService;
+@inject IRunStateService RunStateService;
+
+
+@if (RunStateService.CurrentRun != null)
+{
+    <h3>Current Run Progress</h3>
+    <p>Deck Type: @RunStateService.CurrentRun.Config.DeckType.ToString()</p>
+    <p>Seed: @RunStateService.CurrentRun.Config.Seed</p>
+    <p>Money: @RunStateService.CurrentRun?.Money.Amount</p>
+
+    <!-- Button -->
+    @if (RunStateService.CurrentRun?.HasNextRound == true)
+    {
+        <p>Current Round: @(RunStateService.CurrentRun.CurrentRoundIndex + 1) / @RunStateService.CurrentRun?.TotalRounds</p>
+        <RoundStartNextButton />
+    }
+    else
+    {
+        <p>Run Completed: No more rounds available.</p>
+    }
+}
+else
+{
+    <p>No active run found.</p>
+}
+
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        RunStateService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        RunStateService.OnChange -= StateHasChanged;
+    }
+}

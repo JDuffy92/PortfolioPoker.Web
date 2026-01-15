@@ -1,0 +1,54 @@
+@using PortfolioPoker.Application.Interfaces
+@using PortfolioPoker.Application.Services
+@using PortfolioPoker.Web.Components.Game.Cards
+
+@inject ILogger<DiscardButtonComponent> Logger
+@inject IRunStateService RunStateService
+@inject IGameRoundService GameRoundService
+@inject IAnimationCoordinator AnimationCoordinator
+
+
+<button @onclick="OnDiscardClicked" disabled="@(RunStateService.CurrentRound?.DiscardsAvailable == RunStateService.CurrentRound?.DiscardsMade || RunStateService.SelectedCards.Count() == 0)">
+    Discard Cards
+</button>
+
+@code {
+    protected override void OnInitialized()
+    {
+        RunStateService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        RunStateService.OnChange -= StateHasChanged;
+    }
+
+    private async Task OnDiscardClicked()
+    {
+        var cardsToDiscard = RunStateService.SelectedCards.ToList();
+        if (!cardsToDiscard.Any()) return;
+
+        Logger.LogInformation("Discarding {Count} cards", cardsToDiscard.Count);
+
+        // Discard
+        var discardResult = GameRoundService.DiscardCards(RunStateService.CurrentRound!, cardsToDiscard);
+        RunStateService.ApplyResult(discardResult);
+
+        // Trigger animations & wait
+        AnimationCoordinator.TriggerEvents(discardResult.Events);
+        await AnimationCoordinator.WaitForAnimationsAsync();
+
+        // Clear selection
+        RunStateService.DeselectAllCards();
+
+        // Draw replacement cards
+        var drawResult = GameRoundService.DrawCards(RunStateService.CurrentRound!, cardsToDiscard.Count);
+        RunStateService.ApplyResult(drawResult);
+
+        // Trigger animations & wait
+        AnimationCoordinator.TriggerEvents(drawResult.Events);
+        await AnimationCoordinator.WaitForAnimationsAsync();
+
+        Logger.LogInformation("Discard + Draw complete");
+    }
+}

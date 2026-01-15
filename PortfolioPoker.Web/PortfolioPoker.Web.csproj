@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\PortfolioPoker.Application\PortfolioPoker.Application.csproj" />
+    <ProjectReference Include="..\PortfolioPoker.Domain\PortfolioPoker.Domain.csproj" />
+    <ProjectReference Include="..\PortfolioPoker.Infrastructure\PortfolioPoker.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>

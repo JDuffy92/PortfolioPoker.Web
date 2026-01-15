@@ -1,0 +1,26 @@
+@using PortfolioPoker.Application.Interfaces
+@inject IRunProgressService RunProgressService;
+@inject IGameRoundService GameRoundService;
+@inject IRunStateService RunStateService;
+
+
+<h3>Round Details</h3>
+<p>Current Round: @(RunStateService.CurrentRun?.CurrentRoundIndex + 1) / @RunStateService.CurrentRun?.TotalRounds</p>
+<p>Round Phase: @RunStateService.CurrentRound?.Phase.ToString()</p>
+<p>Round Status: @RunStateService.CurrentRound?.Status.ToString()</p>
+
+<h5>Points</h5>
+<p>Target: @RunStateService.CurrentRound?.PointTarget</p>
+<p>Current: @RunStateService.CurrentRound?.CurrentPoints</p>
+
+@code {
+    protected override void OnInitialized()
+    {
+        RunStateService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        RunStateService.OnChange -= StateHasChanged;
+    }
+}

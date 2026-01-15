@@ -1,0 +1,37 @@
+@using PortfolioPoker.Application.Interfaces
+@using PortfolioPoker.Domain.Models
+@inject IRunProgressService RunProgressService;
+@inject IRunStateService RunStateService;
+
+@if (RunStateService.CurrentRun != null)
+{
+    <button @onclick="RoundEndButtonClicked">Finish Round</button>
+}
+else
+{
+    <p>No active run found.</p>
+}
+
+
+@code {
+    private void RoundEndButtonClicked()
+    {
+        Console.WriteLine("RoundEndButtonClicked clicked");
+        if (RunStateService.CurrentRun != null && RunStateService.CurrentRound != null && RunProgressService.CanStartNextRound(RunStateService.CurrentRun))
+        {
+            //Evaluate the current Round before starting the next one (we need to pass this data to CompleteRound)
+
+            Console.WriteLine("Completing round...");
+            RunProgressService.CompleteRound(RunStateService.CurrentRun, RunStateService.CurrentRound);
+
+            //Clear the current round in the RunStateService
+            Console.WriteLine("Clearing round from state...");
+            RunStateService.ClearRound();
+        }
+        else
+        {
+            // Handle case where no more rounds are available
+            Console.WriteLine("Unable to start next round.");
+        }
+    }
+}

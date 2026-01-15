@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+
+    <!-- This is NOT a test project -->
+    <IsTestProject>false</IsTestProject>
+
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Reference production projects so fakes can implement interfaces -->
+    <ProjectReference Include="..\PortfolioPoker.Domain\PortfolioPoker.Domain.csproj" />
+    <ProjectReference Include="..\PortfolioPoker.Application\PortfolioPoker.Application.csproj" />
+  </ItemGroup>
+
+</Project>

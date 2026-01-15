@@ -1,0 +1,16 @@
+.setup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 300px;
+    margin: 20px 0;
+}
+
+label {
+    font-weight: bold;
+}
+
+input, select, button {
+    padding: 5px;
+    font-size: 14px;
+}

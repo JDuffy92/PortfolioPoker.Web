@@ -1,0 +1,32 @@
+.card-container {
+    width: 120px;
+    height: 160px;
+    border: 2px solid #333;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    background-color: #fff;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    display: inline-block;
+    margin: 5px;
+    font-family: sans-serif;
+}
+
+.card-header {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.card-suit {
+    margin-left: 5px;
+}
+
+.card-body {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.card-selected {
+    border-color: #007bff;
+    box-shadow: 0 0 10px #007bff;
+}

@@ -1,0 +1,62 @@
+@using PortfolioPoker.Application.Interfaces
+@using PortfolioPoker.Application.Services
+@using PortfolioPoker.Web.Components.Game.Cards
+
+@inject ILogger<PlayCardsButtonComponent> Logger
+@inject IRunStateService RunStateService
+@inject IGameRoundService GameRoundService
+@inject IAnimationCoordinator AnimationCoordinator
+
+
+<button @onclick="OnPlayClicked" disabled="@(RunStateService.SelectedCards.Count() == 0)">
+    Play Cards
+</button>
+
+@code {
+    protected override void OnInitialized()
+    {
+        RunStateService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        RunStateService.OnChange -= StateHasChanged;
+    }
+
+    private async Task OnPlayClicked()
+    {
+        //
+        if(RunStateService.CurrentRound is null){
+            Logger.LogWarning("No current round to play cards in.");
+            return;
+        }
+
+        var cardsToPlay = RunStateService.SelectedCards.ToList();
+        if (!cardsToPlay.Any()) return;
+
+        Logger.LogInformation("Playing {Count} cards", cardsToPlay.Count);
+
+        // Play Selected Cards
+        var playResult = GameRoundService.PlayHand(RunStateService.CurrentRound, cardsToPlay);
+        RunStateService.ApplyResult(playResult);
+
+        Logger.LogInformation("Played {Count} cards", cardsToPlay.Count);
+
+        // Trigger animations & wait
+        AnimationCoordinator.TriggerEvents(playResult.Events);
+        await AnimationCoordinator.WaitForAnimationsAsync();
+
+        // Clear selection
+        RunStateService.DeselectAllCards();
+
+        // Draw replacement cards
+        var drawResult = GameRoundService.DrawCards(RunStateService.CurrentRound, cardsToPlay.Count);
+        RunStateService.ApplyResult(drawResult);
+
+        // Trigger animations & wait
+        AnimationCoordinator.TriggerEvents(drawResult.Events);
+        await AnimationCoordinator.WaitForAnimationsAsync();
+
+        Logger.LogInformation("Play + Draw complete");
+    }
+}

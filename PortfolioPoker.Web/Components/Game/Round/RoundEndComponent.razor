@@ -1,0 +1,15 @@
+@using PortfolioPoker.Application.Interfaces
+@inject IRunStateService RunStateService;
+
+@if (RunStateService.CurrentRound != null && RunStateService.CurrentRound.Phase == RoundPhase.RoundEnd)
+{
+    @if(RunStateService.CurrentRound.CurrentPoints >= RunStateService.CurrentRound.PointTarget){
+        <h3>Round End</h3>
+        <p>The round has ended. Please proceed to the next steps.</p>
+        <RoundEndButton />
+    }else{
+        <h3>Round Over - Target Not Met</h3>
+        <p>The round has ended, but the target points were not met. Please Start a New Run.</p>
+        <button href="">New Run</button>
+    }
+}

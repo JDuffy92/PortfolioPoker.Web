@@ -1,0 +1,45 @@
+@using PortfolioPoker.Application.Interfaces
+@using PortfolioPoker.Application.Services
+@using PortfolioPoker.Web.Components.Game.Hand
+@using PortfolioPoker.Web.Components.Game.HandEvaluator
+@using PortfolioPoker.Web.Components.Game.HandScorePreview
+
+@inject IRunStateService RunStateService;
+
+
+@if (RunStateService.CurrentRound == null)
+{
+    <RoundStartNextButton />
+}
+else if (RunStateService.CurrentRound.Phase == RoundPhase.RoundEnd)
+{
+    <RoundEndComponent />
+}
+else
+{
+    <RoundOverviewComponent />
+    <RoundCardsSummaryComponent />
+
+    <RoundDrawCardsComponent />
+
+    @if (RunStateService.CurrentRound.Phase != RoundPhase.StartPhase && RunStateService.CurrentRound.Phase !=
+    RoundPhase.RoundEnd)
+    {
+        <HandEvaluatorComponent />
+        <HandScorePreviewComponent />
+
+        <HandComponent />
+    }
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        RunStateService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        RunStateService.OnChange -= StateHasChanged;
+    }
+}
