@@ -82,5 +82,30 @@ namespace PortfolioPoker.Application.Services
             SelectedCards = Enumerable.Empty<Card>();
             NotifyStateChanged();
         }
+
+        
+        public void SortHandByRank()
+        {
+            var sortedCards = CurrentRound?.Hand.SortByRank(); // Get sorted cards
+
+            if (sortedCards != null)
+            {
+                CurrentRound?.Hand.Cards.Clear(); // Clear existing cards
+                CurrentRound?.Hand.Cards.AddRange(sortedCards); // Add sorted cards back
+                NotifyStateChanged();
+            }
+        }
+
+        public void SortHandBySuit()
+        {
+            var sortedCards = CurrentRound?.Hand.SortBySuit();
+
+            if (sortedCards != null)
+            {
+                CurrentRound?.Hand.Cards.Clear(); // Clear existing cards
+                CurrentRound?.Hand.Cards.AddRange(sortedCards); // Add sorted cards back
+                NotifyStateChanged();
+            }
+        }
     }
 }

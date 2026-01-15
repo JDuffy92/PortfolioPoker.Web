@@ -99,14 +99,15 @@ namespace PortfolioPoker.Application.Services
             var roundStatus = _roundStateEvaluator.Evaluate(round);
 
             //Check if round has ended
-            if(roundStatus != RoundStatus.Active)
+            if (roundStatus != RoundStatus.Active)
             {
                 //If the round isn't active anymore, end it and set its status
                 round.End(roundStatus);
 
                 //Change phase to RoundEnd
                 ChangePhase(round, RoundPhase.RoundEnd, events);
-            } else
+            }
+            else
             {
                 //The round hasn't ended so we go back to DrawPhase for the next hand
                 ChangePhase(round, RoundPhase.DrawPhase, events);
@@ -135,8 +136,9 @@ namespace PortfolioPoker.Application.Services
             return PerformActionResult<IReadOnlyList<Card>>.Ok(discarded, events);
         }
 
-        public HandEvaluationResult PreviewHandEvaluation(IEnumerable<Card> cards){
-           return _handEvaluator.Evaluate(cards.ToList());
+        public HandEvaluationResult PreviewHandEvaluation(IEnumerable<Card> cards)
+        {
+            return _handEvaluator.Evaluate(cards.ToList());
         }
 
         public ScoringServiceResult PreviewScoreCards(IEnumerable<Joker> jokers, HandEvaluationResult handEvaluation)
@@ -155,5 +157,4 @@ namespace PortfolioPoker.Application.Services
 
         public void ResetPhase(Round round) => round.Phase = RoundPhase.DrawPhase;
     }
-
 }
