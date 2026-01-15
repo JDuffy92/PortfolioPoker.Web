@@ -2,6 +2,8 @@ using PortfolioPoker.Application.Interfaces;
 using PortfolioPoker.Domain.Interfaces;
 using PortfolioPoker.Domain.Models;
 using PortfolioPoker.Domain.ValueObjects;
+using PortfolioPoker.Domain.Enums;
+
 
 namespace PortfolioPoker.Application.Services
 {
@@ -11,6 +13,8 @@ namespace PortfolioPoker.Application.Services
         public Round? CurrentRound { get; set; }
 
         public IEnumerable<Card> SelectedCards { get; set; } = Enumerable.Empty<Card>();
+
+        public HandSortMode CurrentSortMode { get; private set; } = HandSortMode.Rank;
 
         public event Action? OnChange;
         public event Action<IReadOnlyList<IGameEvent>>? OnGameEvents;
@@ -26,6 +30,26 @@ namespace PortfolioPoker.Application.Services
             CurrentRound = round;
             NotifyStateChanged();
         }
+
+        public void SetSortMode(HandSortMode mode)
+        {
+            CurrentSortMode = mode;
+            NotifyStateChanged();
+        }
+
+        public IReadOnlyList<Card> GetSortedHandCards()
+        {
+            if (CurrentRound == null)
+                return Array.Empty<Card>();
+
+            return CurrentSortMode switch
+            {
+                HandSortMode.Rank => CurrentRound.Hand.SortByRank(),
+                HandSortMode.Suit => CurrentRound.Hand.SortBySuit(),
+                _ => CurrentRound.Hand.Cards
+            };
+        }
+
 
         public void ClearRound()
         {
@@ -81,31 +105,6 @@ namespace PortfolioPoker.Application.Services
         {
             SelectedCards = Enumerable.Empty<Card>();
             NotifyStateChanged();
-        }
-
-        
-        public void SortHandByRank()
-        {
-            var sortedCards = CurrentRound?.Hand.SortByRank(); // Get sorted cards
-
-            if (sortedCards != null)
-            {
-                CurrentRound?.Hand.Cards.Clear(); // Clear existing cards
-                CurrentRound?.Hand.Cards.AddRange(sortedCards); // Add sorted cards back
-                NotifyStateChanged();
-            }
-        }
-
-        public void SortHandBySuit()
-        {
-            var sortedCards = CurrentRound?.Hand.SortBySuit();
-
-            if (sortedCards != null)
-            {
-                CurrentRound?.Hand.Cards.Clear(); // Clear existing cards
-                CurrentRound?.Hand.Cards.AddRange(sortedCards); // Add sorted cards back
-                NotifyStateChanged();
-            }
         }
     }
 }

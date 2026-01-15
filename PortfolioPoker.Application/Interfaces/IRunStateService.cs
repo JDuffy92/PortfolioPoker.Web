@@ -1,3 +1,4 @@
+using PortfolioPoker.Domain.Enums;
 using PortfolioPoker.Domain.Interfaces;
 using PortfolioPoker.Domain.Models;
 using PortfolioPoker.Domain.ValueObjects;
@@ -30,7 +31,8 @@ namespace PortfolioPoker.Application.Interfaces
 
         void DeselectAllCards();
 
-        void SortHandByRank();
-        void SortHandBySuit();
+        void SetSortMode(HandSortMode mode);
+
+        IReadOnlyList<Card> GetSortedHandCards();
     }
 }
